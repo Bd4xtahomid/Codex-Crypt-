@@ -14,7 +14,7 @@ Thank you for your interest in contributing! This is a non-profit, open-source p
 ## Guidelines
 - **Code Style**: Follow PEP 8.
 - **Tests**: Add unit tests for new features.
-- **Security**: Report vulnerabilities privately via email (rex@example.com) or SECURITY.md.
+- **Security**: Report vulnerabilities privately via email (iamrexeditsofficial@gmail.com) or SECURITY.md.
 - **Docs**: Update README.md or other docs with changes.
 - **Best Practices**: Ensure clear, repeatable code; no secrets; use PoLP.
 
