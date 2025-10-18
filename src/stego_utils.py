@@ -1,4 +1,3 @@
-
 from PIL import Image
 import logging
 
@@ -35,15 +34,28 @@ def lsb_steganography_retrieve(image_path):
     try:
         img = Image.open(image_path).convert('RGB')
         pixels = list(img.getdata())
+        
+        # First, extract just the length (4 bytes = 32 bits)
         bin_data = ''
-        for pixel in pixels:
-            r, g, b = pixel
-            bin_data += str(r & 1)
-            bin_data += str(g & 1)
-            bin_data += str(b & 1)
+        for i in range(11):  # 11 pixels = 33 bits (enough for 4 bytes)
+            r, g, b = pixels[i]
+            bin_data += str(r & 1) + str(g & 1) + str(b & 1)
+        
+        length_bytes = bytes(int(bin_data[i:i+8], 2) for i in range(0, 32, 8))
+        data_len = int.from_bytes(length_bytes, 'big')
+        
+        # Calculate total bits needed (length header + actual data)
+        total_bits_needed = 32 + (data_len * 8)
+        pixels_needed = (total_bits_needed + 2) // 3  # Round up
+        
+        # Now extract only the bits we need
+        bin_data = ''
+        for i in range(min(pixels_needed, len(pixels))):
+            r, g, b = pixels[i]
+            bin_data += str(r & 1) + str(g & 1) + str(b & 1)
+        
         byte_data = bytes(int(bin_data[i:i+8], 2) for i in range(0, len(bin_data), 8))
-        data_len = int.from_bytes(byte_data[:4], 'big')
-        logging.info("Data retrieved from image")
+        logging.info(f"Data retrieved from image: {data_len} bytes")
         return byte_data[4:4+data_len]
     except Exception as e:
         logging.error(f"Steganography retrieve failed: {str(e)}")
