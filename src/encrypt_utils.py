@@ -1,11 +1,10 @@
-
 import os
 import base64
 import random
 import string
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hmac, hashes
-from kyber_py import Kyber
+from kyber_py.ml_kem import ML_KEM_512
 import logging
 
 logging.basicConfig(filename='Secret/logs/app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -30,9 +29,11 @@ def vigenere_encrypt(plaintext, key):
     return ciphertext
 
 def kyber_hybrid_encrypt(data):
-    kyber = Kyber()
-    pk, sk = kyber.keygen()
-    ct, shared_secret = kyber.encap(pk)
+    # Generate Kyber keypair
+    ek, dk = ML_KEM_512.keygen()
+    # Encapsulate to get shared secret (returns shared_secret, ciphertext)
+    shared_secret, ct = ML_KEM_512.encaps(ek)
+    # Use shared secret for AES-GCM encryption
     aesgcm = AESGCM(shared_secret)
     nonce = os.urandom(12)
     encrypted_data = aesgcm.encrypt(nonce, data, None)
@@ -41,7 +42,7 @@ def kyber_hybrid_encrypt(data):
     h.update(encrypted_bundle)
     hmac_tag = h.finalize()
     logging.info("Kyber hybrid encryption completed")
-    return encrypted_bundle, sk, hmac_tag
+    return encrypted_bundle, dk, hmac_tag
 
 def numeric_encode(data, multiplier=23, add=57, mod=100003):
     return [str((byte * multiplier + add) % mod) for byte in data]
@@ -50,7 +51,7 @@ def scramble_nums(nums, seed_key):
     random.seed(seed_key)
     indices = list(range(len(nums)))
     random.shuffle(indices)
-    scrambled = [None] * len(nums)
+    scrambled = [''] * len(nums)
     for i, idx in enumerate(indices):
         scrambled[idx] = nums[i]
     logging.info("Scrambling completed")
