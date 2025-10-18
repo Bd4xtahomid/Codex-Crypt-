@@ -1,29 +1,19 @@
-
-import o
+import os
 import time
 import config
 from src.gui_mode import run_gui
 from src.terminal_mode import run_terminal_mode
 import logging
 
-logging.basicConfig(filename='Secret/logs/app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 if not os.path.exists('Secret'):
-    os.mkdir('Secret')
-if not os.path.exists('Secret/phrases'):
-    os.mkdir('Secret/phrases')
-if not os.path.exists('Secret/images'):
-    os.mkdir('Secret/images')
-if not os.path.exists('Secret/keys'):
-    os.mkdir('Secret/keys')
-if not os.path.exists('Secret/logs'):
-    os.mkdir('Secret/logs')
+    os.makedirs('Secret/phrases', exist_ok=True)
+    os.makedirs('Secret/images', exist_ok=True)
+    os.makedirs('Secret/keys', exist_ok=True)
+    os.makedirs('Secret/logs', exist_ok=True)
+if not os.path.exists('Decrypt'):
+    os.makedirs('Decrypt', exist_ok=True)
 
-subfolder = time.strftime("%Y%m%d_%H%M%S")
-sub_path = os.path.join('Secret', subfolder)
-os.mkdir(sub_path)
-os.mkdir(os.path.join(sub_path, 'images'))
-os.mkdir(os.path.join(sub_path, 'keys'))
+logging.basicConfig(filename='Secret/logs/app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 if __name__ == "__main__":
     logging.info("App started")
