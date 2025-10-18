@@ -1,5 +1,5 @@
 
-import os
+import o
 import time
 import config
 from src.gui_mode import run_gui
