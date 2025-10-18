@@ -2,7 +2,7 @@
 import random
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hmac, hashes
-from kyber_py import Kyber
+from kyber_py.ml_kem import ML_KEM_512
 import logging
 
 logging.basicConfig(filename='Secret/logs/app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -20,12 +20,14 @@ def vigenere_decrypt(ciphertext, key):
     logging.info("Vigenère decryption completed")
     return plaintext
 
-def kyber_hybrid_decrypt(encrypted_bundle_with_tag, sk):
+def kyber_hybrid_decrypt(encrypted_bundle_with_tag, dk):
     hmac_tag = encrypted_bundle_with_tag[-32:]
     encrypted_bundle = encrypted_bundle_with_tag[:-32]
-    kyber = Kyber()
-    ct, nonce, encrypted_data = encrypted_bundle[:kyber.ciphertext_bytes], encrypted_bundle[kyber.ciphertext_bytes:kyber.ciphertext_bytes+12], encrypted_bundle[kyber.ciphertext_bytes+12:]
-    shared_secret = kyber.decap(ct, sk)
+    # ML_KEM_512 ciphertext size is 768 bytes
+    ct_size = 768
+    ct, nonce, encrypted_data = encrypted_bundle[:ct_size], encrypted_bundle[ct_size:ct_size+12], encrypted_bundle[ct_size+12:]
+    # Decapsulate to get shared secret
+    shared_secret = ML_KEM_512.decaps(dk, ct)
     h = hmac.HMAC(shared_secret, hashes.SHA256())
     h.update(encrypted_bundle)
     try:
