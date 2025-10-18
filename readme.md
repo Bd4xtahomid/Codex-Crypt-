@@ -20,11 +20,11 @@ Made by Rex and the Codex Team. This is a non-profit project, open for anyone to
 - Libraries: `pip install kyber-py cryptography pillow`
 
 ## Setup
-1. Clone the repo: `git clone https://github.com/yourusername/quantum-codex-crypt.git`
-2. Navigate to the folder: `cd quantum-codex-crypt`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Place a cover image (e.g., cover.png) in `Secret/images` for encryption.
-5. Run: `python main.py`
+1. Clone the repo: `git clone https://github.com/iamrexeditd/codex-Crypt-.git`
+3. Navigate to the folder: `cd Codex-Crypt`
+4. Install dependencies: `pip install -r requirements.txt`
+5. Place a cover image (e.g., cover.png) in `Secret/images` for encryption.
+6. Run: `python main.py`
 
 ## Configuration
 Edit `config.py`:
